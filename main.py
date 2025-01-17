@@ -17,9 +17,7 @@ from langchain.chains import LLMChain
 from src.state_manager.state_manager import StateManager
 from src.graph.build_graph import build_graph
 from langchain_community.callbacks import get_openai_callback
-from config import (AZURE_DEPLOYMENT_NAME_GPT_4, AZURE_OPENAI_API_BASE,
-                    AZURE_OPENAI_API_KEY, AZURE_OPENAI_API_TYPE,
-                    AZURE_OPENAI_API_VERSION, OPENAI_GPT_MODEL)
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -145,35 +143,8 @@ async def extract_text_from_pdf(pdf: UploadFile = File(...)):
         for page in reader.pages:
             extracted_text += page.extract_text() + "\n"
         
-        extracted_json_data = genterate_json_data(extracted_text.strip())
-        return {"extracted_text": extracted_text.strip(), "extracted_json_data": extracted_json_data}
+        return {"extracted_text": extracted_text.strip()}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error extracting text from PDF: {str(e)}")
 
-def genterate_json_data(user_input):
-    try:
-        # llm = ChatGroq(temperature=0, model_name="llama-3.3-70b-versatile")
-        # llm = ChatOpenAI(model="gpt-3.5-turbo")
-        llm = AzureChatOpenAI(
-            openai_api_base= AZURE_OPENAI_API_BASE,
-            openai_api_key=AZURE_OPENAI_API_KEY,
-            openai_api_version=AZURE_OPENAI_API_VERSION,
-            openai_api_type= AZURE_OPENAI_API_TYPE,
-            model_name=AZURE_DEPLOYMENT_NAME_GPT_4,
-            temperature=0.0
-        )
-        prompt = PromptTemplate(input_variables=["user_input"], template="""
-            Correct the spelling errors in the following sentence: '{user_input}'
-            If there are no spelling mistakes, return the input as it is, without any changes.
-            Only correct the spelling mistakes; do not add any extra content or alter the meaning.
-            Return the response in a simple, clean JSON format without escape characters for clarity.
-            Please ensure that the output JSON is properly formatted and easy to read, following standard JSON syntax.
-        """)       
-        runnable = prompt | llm
-        corrected_input = runnable.invoke({"user_input": user_input})
-        result_content = corrected_input.content.strip('```json').strip('```').strip()
-        return result_content
-    except Exception as e:
-        logging.error(f"Error: {str(e)}")
-        raise

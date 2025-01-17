@@ -17,11 +17,8 @@ from src.graph.assistant import Assistant
 from src.graph.utilities import create_tool_node_with_fallback
 from typing import Literal
 
-from config import (AZURE_DEPLOYMENT_NAME_GPT_4, AZURE_OPENAI_API_BASE,
-                    AZURE_OPENAI_API_KEY, AZURE_OPENAI_API_TYPE,
-                    AZURE_OPENAI_API_VERSION, OPENAI_GPT_MODEL)
+
 dotenv.load_dotenv()
-OPENAI_GPT_MODEL = os.getenv("OPENAI_GPT_MODEL")
 CHECKPOINT = os.getenv("CHECKPOINT_PATH")
 
 def build_graph():

@@ -13,7 +13,6 @@ from config import RESTRICT_OPEN_ENDED_QUERIES
 from src.openai_prompt_template.prompt_templates import get_date_prompt_template
 
 dotenv.load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_GPT_MODEL = os.getenv("OPENAI_GPT_MODEL")
 
 MESSAGES_PLACEHOLDER = "{messages}"
