@@ -26,14 +26,6 @@ def build_graph():
         builder = StateGraph(State)
         llm = ChatGroq(temperature=0, model_name="llama-3.3-70b-versatile")
         #llm = ChatOpenAI(model_name=OPENAI_GPT_MODEL, temperature=0)
-        # llm = AzureChatOpenAI(
-        #     openai_api_base= AZURE_OPENAI_API_BASE,
-        #     openai_api_key=AZURE_OPENAI_API_KEY,
-        #     openai_api_version=AZURE_OPENAI_API_VERSION,
-        #     openai_api_type= AZURE_OPENAI_API_TYPE,
-        #     model_name=AZURE_DEPLOYMENT_NAME_GPT_4,
-        #     temperature=0.0
-        # )
         
         # Primary Assistant
         primary_assistant_prompt = initialize_primary_assistant_prompt_template()
