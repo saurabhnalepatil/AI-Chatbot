@@ -2,7 +2,6 @@ import logging
 import os
 import dotenv
 
-from langchain_openai import ChatOpenAI, AzureChatOpenAI
 from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import tools_condition
 from langgraph.checkpoint.sqlite import SqliteSaver
