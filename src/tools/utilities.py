@@ -8,7 +8,7 @@ from langchain_core.runnables import RunnableLambda, RunnableSequence
 from langchain.prompts import PromptTemplate
 from langchain.prompts import PromptTemplate, ChatPromptTemplate
 from langchain.agents import tool
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from config import RESTRICT_OPEN_ENDED_QUERIES
 from src.openai_prompt_template.prompt_templates import get_date_prompt_template
 
@@ -63,7 +63,7 @@ def handle_open_world_question(user_query: str) -> str:
     try:
         prompt = initialize_open_ended_questions_prompt_template()
 
-        model = ChatOpenAI(model_name=OPENAI_GPT_MODEL, temperature=0)
+        model = ChatGroq(model_name=OPENAI_GPT_MODEL, temperature=0)
         chain = prompt | model
         response = chain.invoke(user_query)
         return response
@@ -95,7 +95,7 @@ def handle_date_question(user_query: str) -> Tuple[bool, Optional[datetime.date]
     """
     try:
         today_date = datetime.now().strftime("%A, %Y-%m-%d")
-        llm = ChatOpenAI(model_name=OPENAI_GPT_MODEL, temperature=0)
+        llm = ChatGroq(model_name=OPENAI_GPT_MODEL, temperature=0)
 
         prompt = PromptTemplate(
             input_variables=["today", "user_text"],

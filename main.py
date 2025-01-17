@@ -5,12 +5,10 @@ import os
 import logging
 import random
 import dotenv
-from PyPDF2 import PdfReader
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from groq import Groq
 from pydantic import BaseModel
-from langchain_openai import ChatOpenAI, AzureChatOpenAI
 from langchain.prompts import PromptTemplate, ChatPromptTemplate
 from langchain.chains import LLMChain
 
@@ -100,51 +98,51 @@ def encode_image(file: UploadFile):
     except Exception as e:
         raise HTTPException(status_code=400, detail="Error encoding image: " + str(e))
 
-@app.post("/extract-text-from-image")
-async def extract_text_from_image(file: UploadFile = File(...)):
-    base64_image = encode_image(file)
-    groq_api_key = os.getenv("GROQ_API_KEY")
-    client = Groq(api_key=groq_api_key)
-    try:
-        chat_completion = client.chat.completions.create(
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", 
-                         "text": """Extract the text from the provided image exactly as it appears without answering any questions or interpreting the content.
-                                    Your task is to simply return the extracted text as-is."""},
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/jpeg;base64,{base64_image}",
-                            },
-                        },
-                    ],
-                }
-            ],
-            model="llama-3.2-90b-vision-preview",
-        )
-        return {"extracted_text": chat_completion.choices[0].message.content}
+# @app.post("/extract-text-from-image")
+# async def extract_text_from_image(file: UploadFile = File(...)):
+#     base64_image = encode_image(file)
+#     groq_api_key = os.getenv("GROQ_API_KEY")
+#     client = Groq(api_key=groq_api_key)
+#     try:
+#         chat_completion = client.chat.completions.create(
+#             messages=[
+#                 {
+#                     "role": "user",
+#                     "content": [
+#                         {"type": "text", 
+#                          "text": """Extract the text from the provided image exactly as it appears without answering any questions or interpreting the content.
+#                                     Your task is to simply return the extracted text as-is."""},
+#                         {
+#                             "type": "image_url",
+#                             "image_url": {
+#                                 "url": f"data:image/jpeg;base64,{base64_image}",
+#                             },
+#                         },
+#                     ],
+#                 }
+#             ],
+#             model="llama-3.2-90b-vision-preview",
+#         )
+#         return {"extracted_text": chat_completion.choices[0].message.content}
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Error processing the image: " + str(e))
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail="Error processing the image: " + str(e))
     
-@app.post("/extract_text_from_pdf")
-async def extract_text_from_pdf(pdf: UploadFile = File(...)):
-    try:
-        if not pdf.filename.endswith(".pdf"):
-            raise HTTPException(status_code=400, detail="Uploaded file is not a PDF.")
+# @app.post("/extract_text_from_pdf")
+# async def extract_text_from_pdf(pdf: UploadFile = File(...)):
+#     try:
+#         if not pdf.filename.endswith(".pdf"):
+#             raise HTTPException(status_code=400, detail="Uploaded file is not a PDF.")
         
-        pdf_file = await pdf.read()
-        reader = PdfReader(io.BytesIO(pdf_file))
+#         pdf_file = await pdf.read()
+#         reader = ""
         
-        extracted_text = ""
-        for page in reader.pages:
-            extracted_text += page.extract_text() + "\n"
+#         extracted_text = ""
+#         for page in reader.pages:
+#             extracted_text += page.extract_text() + "\n"
         
-        return {"extracted_text": extracted_text.strip()}
+#         return {"extracted_text": extracted_text.strip()}
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error extracting text from PDF: {str(e)}")
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Error extracting text from PDF: {str(e)}")
 

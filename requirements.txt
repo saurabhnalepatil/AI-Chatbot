@@ -1,15 +1,7 @@
 python-dotenv
-pytz
-requests
-streamlit
 langchain
-langchain-openai
 langgraph==0.0.44
-pydantic
 fastapi
 uvicorn
 langsmith
-datefinder
-matplotlib
 langchain-groq
-python-multipart
